@@ -10,17 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Pega o código do repositório
       - uses: actions/checkout@v4
 
+      # 2️⃣ Gera o tree.json
       - name: Generate tree.json
         run: |
           curl -s https://api.github.com/repos/${{ github.repository }}/git/trees/main?recursive=1 \
           | jq '.tree' > tree.json
 
+      # 3️⃣ Commit e push do tree.json automaticamente
       - name: Commit tree.json
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add tree.json
-          git commit -m "Atualiza tree.json" || exit 0
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Atualiza tree.json"
+          branch: main
+          file_pattern: tree.json
+          author_name: "github-actions"
+          author_email: "actions@github.com"
