@@ -28,3 +28,15 @@ jobs:
           file_pattern: tree.json
           author_name: "github-actions"
           author_email: "actions@github.com"
+
+      # 4️⃣ Publica no GitHub Pages (branch gh-pages)
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./   # O tree.json está na raiz
+          force_orphan: true
+          commit_message: "Publica tree.json no GitHub Pages"
+          user_name: github-actions
+          user_email: actions@github.com
