@@ -1,0 +1,26 @@
+name: Generate Repo Tree
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate tree.json
+        run: |
+          curl -s https://api.github.com/repos/${{ github.repository }}/git/trees/main?recursive=1 \
+          | jq '.tree' > tree.json
+
+      - name: Commit tree.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add tree.json
+          git commit -m "Atualiza tree.json" || exit 0
+          git push
